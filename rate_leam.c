@@ -12,7 +12,6 @@ int countAux = 0;
 
 typedef struct
 {
-
     char id[SIZE];
     int timePeriod;
     int timeDur;
@@ -42,18 +41,33 @@ void calcular () {
 
 void separatorarguments()
 {
-    
+    int flags = 0;
     char *ptr;
 
     ptr = strtok(argList[countI+1], " ");
 
     while (ptr != NULL)
     {
-        list[count].timePeriod = ptr;
-        count++;
+        //Variável auxiliar para colocar o período e o cpu burst na struct
+        if(flags == 0) {
+
+            strcpy(list[count].id, ptr);
+            flags = 1;
+        }
+
+        else if(flags == 1)     {
+            list[count].timePeriod = (int*)ptr;
+            flags = 2;
+
+        }else if(flags == 2) {
+
+            list[count].timeDur = (int*)ptr;
+            
+        }
         ptr = strtok(NULL, " ");
     }
-    list[countAux].timeDur = list[count - 1].timePeriod;
+    count++;
+    countI++;
 }
 
 int main (int argc, char** argv) {
@@ -69,24 +83,55 @@ int main (int argc, char** argv) {
     
     file = fopen(argv[1], "r");
     fscanf(file, "%d", &timeTotal);
-    
-    while (!feof(file) && !ferror(file))
+   // printf("%d", timeTotal);
+    int flag = 0;
+    int count = 0;
+    if (file)
     {
+
+        char line[1024];
+        while (fgets(line, 1024, file)) {
+            
+            if (flag > 0)
+            {
+                printf("%s", line);
+                if (sscanf(line, "%s %d %d", list[count].id, &list[count].timePeriod, &list[count].timeDur) == 2)
+                {
+                }
+                
+
+            }
+            if (flag > 0)
+                count++;
+
+            flag = 1;
+    }
+
+    }
+
+  //  while (fscanf(file, "%c %d \n", &, &data) != NULL)
+  /*  { /*
         argList[r] = malloc(sizeof *argList[r] * 100);
         fgets(argList[r], 100, file);
         argList[r][strlen(argList[r]) - 1] = '\0';
-        r++;
-    }
+        r++; */
 
-    
+ //       fscanf("")
+   // }
 
-   // calcular();
+    //separatorarguments();
 
-    for (int i = 0; i < r; i++) {
-        
-        printf("%s\n", argList[i]);
-    
-    }
+    printf("%s\n", list[0].id);
+    printf("%d\n", list[0].timePeriod);
+    printf("%d\n", list[0].timeDur);
+
+ /*  for (int i = 0; i < r; i++)
+    {
+
+        printf("%s\n", list[i].id);
+        printf("%d\n", list[i].timeDur);
+        printf("%d\n", list[i].timePeriod);
+    }*/
 
     return 0;
 }
