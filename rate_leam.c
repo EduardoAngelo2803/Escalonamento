@@ -10,8 +10,8 @@ char *argList[BUFFER];
 int count = 0;
 int countAux = 0;
 
-typedef struct
-{
+typedef struct {
+
     char id[SIZE];
     int timePeriod;
     int timeDur;
@@ -21,33 +21,70 @@ typedef struct
 
 Process list[SIZE];
 
+void selection_sort () {
+  int i, j, min, aux;
+  
+  for (i = 0; i < count-1; i++) {
+  
+    min = i;
+
+    for (j = i+1; j < count; j++) {
+      
+        if (list[j].timePeriod < list[min].timePeriod) {
+            min = j;
+        }
+    }
+    
+    if (i != min) {
+        aux = list[i].timePeriod;
+        list[i].timePeriod = list[min].timePeriod;
+        list[min].timePeriod = aux;
+    }
+  }
+}
+
 void calcular () {
 
-    /*
-    printf("Processo 1: \n");
-
-    scanf("%19[0-9a-zA-Z]", list[0].id);
-    scanf("%d", &list[0].timeExec);
-    scanf("%d", &list[0].timeWait);
-
-    printf("Processo 2: \n");
-    scanf("%19[0-9a-zA-Z]", list[0].id);
-    scanf("%d", &list[1].timeExec);
-    scanf("%d", &list[1].timeWait);
-
-    int unit; */
     
 }
 
-void separatorarguments()
-{
+void insertion_sort(int max) {
+
+    int i, j, auxPeriod, auxDur, auxWait;
+    char auxId[SIZE];
+
+    for (i = 1; i < max; i++)
+    {
+
+        auxPeriod = list[i].timePeriod;
+        auxDur = list[i].timeDur;
+        auxWait = list[i].timeWait;
+        strcpy(auxId, list[i].id);
+        for (j = i - 1; j >= 0 && auxPeriod < list[j].timePeriod; j--)
+        {
+
+            list[j + 1].timePeriod = list[j].timePeriod;
+            list[j + 1].timeDur = list[j].timeDur;
+            list[j + 1].timeWait = list[j].timeWait;
+            strcpy(list[j + 1].id, list[j].id);
+        }
+
+        list[j + 1].timePeriod = auxPeriod;
+        list[j + 1].timeDur = auxDur;
+        list[j + 1].timeWait = auxWait;
+        strcpy(list[j + 1].id, auxId);
+    }
+}
+
+void separatorarguments() {
+
     int flags = 0;
     char *ptr;
 
     ptr = strtok(argList[countI+1], " ");
 
-    while (ptr != NULL)
-    {
+    while (ptr != NULL) {
+
         //Variável auxiliar para colocar o período e o cpu burst na struct
         if(flags == 0) {
 
@@ -55,7 +92,7 @@ void separatorarguments()
             flags = 1;
         }
 
-        else if(flags == 1)     {
+        else if(flags == 1) {
             list[count].timePeriod = (int*)ptr;
             flags = 2;
 
@@ -78,60 +115,39 @@ int main (int argc, char** argv) {
         exit(1);
     }
 
-    int r = 0;
     FILE *file;
     
     file = fopen(argv[1], "r");
     fscanf(file, "%d", &timeTotal);
-   // printf("%d", timeTotal);
+   
     int flag = 0;
     int count = 0;
-    if (file)
-    {
+    if (file) {
 
         char line[1024];
         while (fgets(line, 1024, file)) {
             
-            if (flag > 0)
-            {
-                printf("%s", line);
-                if (sscanf(line, "%s %d %d", list[count].id, &list[count].timePeriod, &list[count].timeDur) == 2)
-                {
-                }
-                
+            if (flag > 0) {
 
+                if (sscanf(line, "%s %d %d", list[count].id, &list[count].timePeriod, &list[count].timeDur) == 2);
+                
             }
             if (flag > 0)
                 count++;
 
             flag = 1;
+        }
     }
 
+    int max = count;
+
+    // selection_sort();
+    insertion_sort(max);
+
+    for (int i = 0; i < count; i++) {
+
+        printf("%s %d %d\n", list[i].id, list[i].timePeriod, list[i].timeDur);
     }
 
-  //  while (fscanf(file, "%c %d \n", &, &data) != NULL)
-  /*  { /*
-        argList[r] = malloc(sizeof *argList[r] * 100);
-        fgets(argList[r], 100, file);
-        argList[r][strlen(argList[r]) - 1] = '\0';
-        r++; */
-
- //       fscanf("")
-   // }
-
-    //separatorarguments();
-
-    printf("%s\n", list[0].id);
-    printf("%d\n", list[0].timePeriod);
-    printf("%d\n", list[0].timeDur);
-
- /*  for (int i = 0; i < r; i++)
-    {
-
-        printf("%s\n", list[i].id);
-        printf("%d\n", list[i].timeDur);
-        printf("%d\n", list[i].timePeriod);
-    }*/
-
-    return 0;
+        return 0;
 }
