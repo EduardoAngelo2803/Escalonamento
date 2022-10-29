@@ -62,29 +62,40 @@ void insertion_sort(int max) {
 
 void calcular() {
 
-    
 
-    if (list[0].timeDur < list[1].timePeriod)
-    {
+    printf("[%s] for %d units - F \n", list[0].id, list[0].timeDur);
 
-        printf("[%s] for %d units - F \n", list[0].id, list[0].timeDur);
-    
-        timeTotal -= list[0].timeDur;
+    timeTotal -= list[0].timeDur;
+    list[0].exeComp++;
 
-        if(list[0].time)
-    }
+        if(list[0].timeDur+list[1].timeDur < list[0].timePeriod) {
+
+        printf("[%s] for %d units - F \n", list[1].id, list[1].timeDur);
+        list[1].exeComp++;
+
+        }else {
+
+            printf("[%s] for %d units - H \n", list[1].id, list[0].timePeriod - list[0].timeDur);
+            timeTotal -= list[0].timePeriod - list[0].timeDur;
+        }
+
+
 }
-
 int main (int argc, char** argv) {
 
     if(argc <= 1) {
 
-        printf("no argList entered!\n");
-        exit(1);
+        printf("no argList entered! Please input one! Ex: ./rate 'namefile'\n");
+        exit(EXIT_FAILURE);
+
+    }else if (argc > 2) {
+
+        printf("Many arguments entered! Please input just one, Ex: ./rate 'namefile'\n");
+        exit(EXIT_FAILURE);
     }
 
     FILE *file;
-    
+
     file = fopen(argv[1], "r");
     fscanf(file, "%d", &timeTotal);
    
