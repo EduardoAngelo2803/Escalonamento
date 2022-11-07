@@ -1,0 +1,23 @@
+EXECUTION BY RATE
+[#2] for 1000 units - F 
+[#3] for 2500 units - F 
+[#1] for 1500 units - H 
+[#2] for 1000 units - F 
+[#1] for 4000 units - F 
+[#2] for 1000 units - F 
+[#3] for 1500 units - K 
+
+LOST DEADLINES
+[#2] 0
+[#3] 0
+[#1] 0
+
+COMPLETE EXECUTION
+[#2] 3
+[#3] 1
+[#1] 1
+
+KILLED
+[#2] 0
+[#3] 1
+[#1] 0

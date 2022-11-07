@@ -77,111 +77,6 @@ void insertion_sort(int max) {
     }
 }
 
-void calcular3 () {
-
-    timeSpent = 0;
-    int auxper[count];
-    int j, i, mult = 1;
-    int flag = 0;
-    for(j = 0; j < max; j++) {
-
-        auxper[j] = list[j].timePeriod;       
-    }
-
-    while(timeSpent < timeTotal) {
-
-        for(i = 0; i < max; i++) {
-
-            if(list[i].priority == 1) {
-
-                //FULL
-                if(timeSpent == 0) {
-
-                    printf("[%s] for %d units - F \n", list[i].id, list[i].timeDur);
-                    timeSpent += list[i].timeDur;
-                    list[i].exeComp++;
-                //FULL
-                }else if ((timeSpent % list[i].timePeriod) == 0) {
-
-                    printf("[%s] for %d units - F \n", list[i].id, list[i].timeDur);
-                    timeSpent += list[i].timeDur;
-                    list[i].exeComp++;
-                //KILL
-                }else if(timeSpent + list[i].timeDur >= timeTotal) {
-
-                    printf("[%s] for %d units - K \n", list[i].id, timeTotal-timeSpent);
-                    timeSpent = timeTotal;
-                    list[i].killed++;
-                    break;
-                    
-                }
-
-            }else if(list[i].priority != 1) {
-             
-                //FINISH
-                if (((timeSpent + list[i].timeDur) % list[i-1].timePeriod) == 0) {
-
-                    printf("[%s] for %d units - F\n", list[i].id, list[i].timeDur);
-                    timeSpent += list[i].timeDur;
-                    list[i].timeWait = 0;                    
-                    list[i].exeComp++;
-                                
-                //FINISH
-                }else if (((timeSpent + list[i].timeWait) / list[i].timePeriod < 1) && list[i].timeWait > 0) {
-
-                    printf("[%s] for %d units - F\n", list[i].id, list[i].timeDur);
-                    timeSpent += list[i].timeDur;
-                    list[i].timeWait = 0;
-                    list[i].exeComp++;
-                //HOLD
-                }else if (((list[i].timeDur + timeSpent) / list[i-1].timePeriod) >= 1) {
-
-                    if(list[i].timeWait == 0) {           
-
-                        mult = (list[i].timeDur + timeSpent) / list[i-1].timePeriod;
-                        list[i].timeWait = timeSpent + list[i].timeDur - list[i-1].timePeriod * mult;
-                        printf("[%s] for %d units - H\n", list[i].id, list[i].timeDur-list[i].timeWait);
-                        timeSpent = list[i-1].timePeriod; 
-                        
-                    }else if(((list[i].timeWait + timeSpent) / list[i].timePeriod) < 1) {
-
-                        mult = (list[i].timeDur + timeSpent) / list[i-1].timePeriod;
-                        list[i].timeWait = timeSpent + list[i].timeDur - list[i-1].timePeriod * mult;
-                        printf("[%s] for %d units - H\n", list[i].id, list[i].timeDur-list[i].timeWait);
-                        timeSpent = list[i-1].timePeriod; 
-                    }
-                
-                //LOST
-                }else if (((timeSpent + list[i].timeWait) % list[i].timePeriod != 0) || (timeSpent + list[i].timeDur) % list[i].timePeriod != 0) {
-
-                    printf("[%s] for %d units - L\n", list[i].id, list[i].timePeriod - timeSpent);
-                    timeSpent = list[i].timePeriod;
-                    list[i].lostDead++;
-                
-                //KILL
-                }else if(timeSpent + list[i].timeDur >= timeTotal) {
-
-                    printf("[%s] for %d units - K \n", list[i].id, timeTotal-timeSpent);
-                    timeSpent = timeTotal;
-                    list[i].killed++;
-
-                }
-
-            }else {
-
-                printf("iddle for %d\n", list[0].timePeriod - timeSpent);
-            }
-                      
-            if ((timeSpent > list[i].timePeriod) && (list[i].timePeriod + auxper[i]) < timeTotal) {
-
-                list[i].timePeriod += auxper[i];
-                 
-            }                   
-                printf("\n%d %d %d", timeSpent, list[i].timeWait, list[i].timePeriod);    
-        }          
-    }   
-}
-
 int verHold(int i) {
 
     int flag = max-1;
@@ -259,7 +154,7 @@ int verificarPer (int i) {
                         
                         flagPer = 0;
 
-                    }else if (timeSpent + list[i].timeDur < list[j-1].timePeriod) {
+                    }else if (timeSpent + list[i].timeDur <= list[j-1].timePeriod) {
                         
                         flagPer = 1;
                     }
@@ -418,8 +313,7 @@ void calcular4() {
 
     int auxper[count];
     int i, j, aux, aux2, count2 = 0;
-    
-    
+     
     int flag = 0;
     f = fopen("rate_leam.out", "w");
 
@@ -761,15 +655,6 @@ void calcular4() {
     
 }
 
-int all_space(const char *str) {
-    while (*str) {
-        if (!isspace(*str++)) {
-            return 0;
-        }
-    }
-    return 1;
-}
-
 int main(int argc, char **argv) {
 
     if(argc <= 1) {
@@ -796,11 +681,9 @@ int main(int argc, char **argv) {
         while (fgets(line, 1024, file)) {
             //Condicional para ignorar a primeira linha, que é o tempo total
             if (flag > 0) {
-
-                if(all_space(line) == 0) {
-
-                    if (sscanf(line, "%s %d %d", list[count].id, &list[count].timePeriod, &list[count].timeDur) == 2);   
-                }
+                
+                if (sscanf(line, "%s %d %d", list[count].id, &list[count].timePeriod, &list[count].timeDur) == 2);   
+                
             }
             if (flag > 0)
                 count++;
@@ -848,7 +731,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i < max; i++) {
 
         if (i == max-1) {
-            printf("[%s] %d", list[i].id, list[i].killed);
+            printf("[%s] %d\n", list[i].id, list[i].killed);
             fprintf(f, "[%s] %d", list[i].id, list[i].killed);
             break;
         }

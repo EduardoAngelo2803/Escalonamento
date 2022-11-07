@@ -8,4 +8,4 @@ rate_leam: rate_leam.c
 
 clean:
 
-	rm  -f  shell.c
+	rm  -f  rate_leam.c
